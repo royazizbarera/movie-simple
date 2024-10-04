@@ -93,14 +93,19 @@ export default function SignUpForm() {
         Sign up
       </Button>
       <Typography
-        endDecorator={<Link href="/sign-up">Login</Link>}
+        endDecorator={<Link href="/sign-in">Login</Link>}
         sx={{ fontSize: "sm", alignSelf: "center" }}
       >
         Have an account?
       </Typography>
       <Divider />
       <Button
-        variant="soft"
+        variant="outlined"
+        sx={{
+          borderColor: "common.black",
+          backgroundColor: "common.white",
+          color: "common.black",
+        }}
         startDecorator={
           <Avatar
             src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-1024.png"
@@ -111,10 +116,7 @@ export default function SignUpForm() {
             }}
           />
         }
-        sx={{
-          backgroundColor: "common.white",
-          color: "common.black",
-        }}
+        
       >
         Sign up with Google
       </Button>

@@ -14,6 +14,7 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorLogin, setErrorLogin] = useState("");
+  const [loading, setLoading] = useState(false); // Tambahkan loading state
 
   const handleGoogleLogin = () => {
     const currentUrl = window.location.href; // Dapatkan URL halaman saat ini
@@ -26,16 +27,16 @@ export default function LoginForm() {
   };
 
   const handleEmailPasswordLogin = async () => {
+    setLoading(true); // Mulai loading
     try {
-      await loginUser(
-        email,
-        password
-      );
+      await loginUser(email, password);
       setErrorLogin("");
+      setLoading(false); // Selesai loading setelah login
     } catch (error: any) {
       setErrorLogin(
         error.message || "Terjadi kesalahan saat login. Coba lagi nanti."
       );
+      setLoading(false); // Selesai loading jika gagal
     }
   };
 
@@ -88,19 +89,32 @@ export default function LoginForm() {
           onChange={(e) => setPassword(e.target.value)} // Update state
         />
       </FormControl>
-      <Button onClick={handleEmailPasswordLogin} sx={{ mt: 1 }}>
-        Login
+
+      <Button
+        onClick={handleEmailPasswordLogin}
+        sx={{ mt: 1 }}
+        disabled={loading} // Disable button ketika loading
+      >
+        {loading ? "Logging in..." : "Login"} {/* Indikasi loading */}
       </Button>
+
       <Typography
         endDecorator={<Link href="/sign-up">Sign up</Link>}
         sx={{ fontSize: "sm", alignSelf: "center" }}
       >
         Don&apos;t have an account?
       </Typography>
+
       <Divider />
+
       <Button
-        variant="soft"
+        variant="outlined"
         onClick={handleGoogleLogin}
+        sx={{
+          borderColor: "common.black",
+          backgroundColor: "common.white",
+          color: "common.black",
+        }}
         startDecorator={
           <Avatar
             src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-1024.png"
@@ -111,10 +125,6 @@ export default function LoginForm() {
             }}
           />
         }
-        sx={{
-          backgroundColor: "common.white",
-          color: "common.black",
-        }}
       >
         Login with Google
       </Button>

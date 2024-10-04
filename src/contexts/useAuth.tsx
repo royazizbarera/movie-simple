@@ -40,7 +40,7 @@ export const UserProvider = ({ children }: Props) => {
       axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
     }
     setIsReady(true);
-  }, []);
+  }, [token]);
 
   const registerUser = async (
     username: string,
@@ -55,6 +55,7 @@ export const UserProvider = ({ children }: Props) => {
       );
 
       if (user) {
+        setToken(user.token);
         navigate("/");
       } else {
         throw new Error(
@@ -75,6 +76,7 @@ export const UserProvider = ({ children }: Props) => {
         password
       );
       if (user) {
+        setToken(user.token);
         navigate("/");
       } else {
         throw new Error(
@@ -89,6 +91,7 @@ export const UserProvider = ({ children }: Props) => {
   };
 
   const isLoggedIn = () => {
+    if(token) return true;
     return !!user;
   };
 
@@ -99,6 +102,7 @@ export const UserProvider = ({ children }: Props) => {
 
   // Fungsi untuk mengecek apakah user adalah writer
   const isWriter = () => {
+    return token !== null;
     return user?.role === "writer";
   };
 

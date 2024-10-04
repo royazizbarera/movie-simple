@@ -12,15 +12,23 @@ import {
   Modal,
   ModalClose,
   Sheet,
+  Avatar,
+  Typography,
+  Dropdown,
+  MenuButton,
+  Menu,
+  MenuItem,
 } from "@mui/joy";
 
 import MovieNexusIcon from "./MovieNexusIcon";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import ModeToggle from "./ModeTogle";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
+import { useAuth } from "../../contexts/useAuth";
+import { MoreVert } from "@mui/icons-material";
 
 const appBarContent = [
   { label: "Home", href: "/" },
@@ -170,6 +178,18 @@ export default function AppAppBar() {
   const [openSignIn, setOpenSignIn] = React.useState<boolean>(false);
   const [openSignUp, setOpenSignUp] = React.useState<boolean>(false);
 
+  // Use the auth context to get user information
+  const { user, isLoggedIn, logoutUser } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogoutUser = () => {
+    logoutUser();
+  };
+
+  const goToProfilePage = () => {
+    navigate("/user-profile");
+  };
+
   return (
     <Box
       component="header"
@@ -187,21 +207,17 @@ export default function AppAppBar() {
         {/* Toolbar */}
         <Box
           sx={{
-            // display
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             borderRadius: `calc(8px + 8px)`,
             border: "1px solid",
             padding: "8px 16px",
-
-            // color
             backdropFilter: "blur(24px)",
             borderColor: "neutral.outlinedBorder",
             backgroundColor: "background.backdrop",
           }}
         >
-          {/* Content */}
           {/* Left Side - Menu and Navigation Buttons */}
           <MovieNexusIcon />
 
@@ -225,7 +241,7 @@ export default function AppAppBar() {
             ))}
           </Box>
 
-          {/* Right Side - Buttons for Login and Sign Up */}
+          {/* Right Side - Conditional Rendering for Login/Sign Up or User Profile */}
           <Box
             sx={{
               flexGrow: 0,
@@ -233,28 +249,63 @@ export default function AppAppBar() {
                 xs: "none",
                 md: "flex",
               },
+              alignItems: "center",
             }}
           >
-            <Button
-              onClick={() => setOpenSignIn(true)}
-              variant="soft"
-              color="neutral"
-              sx={{ marginRight: 1 }}
-            >
-              Login
-            </Button>
-            <Button
-              onClick={() => setOpenSignUp(true)}
-              variant="solid"
-              color="primary"
-              sx={{ marginRight: 1 }}
-            >
-              Sign Up
-            </Button>
-            <ModeToggle />
+            {isLoggedIn() ? (
+              // If user is logged in, show profile and logout button
+              <>
+                <Dropdown>
+                  <MenuButton
+                    slots={{ root: IconButton }}
+                    slotProps={{
+                      root: { variant: "solid", color: "neutral" },
+                    }}
+                    sx={{
+                      borderRadius: 40,
+                      mr: 2,
+                    }}
+                  >
+                    <Avatar
+                      variant="plain"
+                      alt={user?.username || "User"}
+                      src={user?.photoProfile}
+                    />
+                  </MenuButton>
+                  <Menu>
+                    <MenuItem onClick={goToProfilePage}>Profile</MenuItem>
+                    <MenuItem>Watch List</MenuItem>
+                    <MenuItem onClick={handleLogoutUser}>Logout</MenuItem>
+                  </Menu>
+                </Dropdown>
+
+                <ModeToggle />
+              </>
+            ) : (
+              // If user is not logged in, show Login and Sign Up buttons
+              <>
+                <Button
+                  onClick={() => setOpenSignIn(true)}
+                  variant="soft"
+                  color="neutral"
+                  sx={{ marginRight: 1 }}
+                >
+                  Login
+                </Button>
+                <Button
+                  onClick={() => setOpenSignUp(true)}
+                  variant="solid"
+                  color="primary"
+                  sx={{ marginRight: 1 }}
+                >
+                  Sign Up
+                </Button>
+                <ModeToggle />
+              </>
+            )}
           </Box>
 
-          {/* Movile */}
+          {/* Mobile Drawer */}
           <Box sx={{ display: { sm: "flex", md: "none" } }}>
             <React.Fragment>
               <IconButton
@@ -267,11 +318,7 @@ export default function AppAppBar() {
               <Drawer open={openSidebar} onClose={() => setOpenSidebar(false)}>
                 <ModalClose />
                 <DialogTitle>Menu</DialogTitle>
-                <DialogContent
-                  sx={{
-                    pb: 1,
-                  }}
-                >
+                <DialogContent sx={{ pb: 1 }}>
                   <Autocomplete
                     placeholder="Search"
                     options={top100Films}
@@ -299,6 +346,7 @@ export default function AppAppBar() {
                     ))}
                   </List>
                 </DialogContent>
+
                 {/* Right Side - Buttons for Login and Sign Up */}
                 <Box
                   sx={{
@@ -307,29 +355,53 @@ export default function AppAppBar() {
                     padding: 2,
                   }}
                 >
-                  <Button
-                    variant="soft"
-                    color="neutral"
-                    sx={{ marginRight: 1 }}
-                    onClick={() => setOpenSignIn(true)}
-                  >
-                    Login
-                  </Button>
-                  <Button
-                    onClick={() => setOpenSignUp(true)}
-                    variant="solid"
-                    color="primary"
-                    sx={{ marginRight: 1 }}
-                  >
-                    Sign Up
-                  </Button>
-                  <ModeToggle />
+                  {isLoggedIn() ? (
+                    <>
+                      <Avatar
+                        alt={user?.username || "User"}
+                        src={user?.photoProfile}
+                        sx={{ marginRight: 1 }}
+                      />
+                      <Typography level="body-md" sx={{ marginRight: 2 }}>
+                        {user?.username}
+                      </Typography>
+                      <Button
+                        variant="outlined"
+                        color="neutral"
+                        sx={{ marginRight: 1 }}
+                        onClick={logoutUser}
+                      >
+                        Logout
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant="soft"
+                        color="neutral"
+                        sx={{ marginRight: 1 }}
+                        onClick={() => setOpenSignIn(true)}
+                      >
+                        Login
+                      </Button>
+                      <Button
+                        onClick={() => setOpenSignUp(true)}
+                        variant="solid"
+                        color="primary"
+                        sx={{ marginRight: 1 }}
+                      >
+                        Sign Up
+                      </Button>
+                    </>
+                  )}
                 </Box>
               </Drawer>
             </React.Fragment>
           </Box>
         </Box>
       </Container>
+
+      {/* Login and Sign Up Modals */}
       <React.Fragment>
         <Modal
           aria-labelledby="modal-title"

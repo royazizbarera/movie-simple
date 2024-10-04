@@ -5,8 +5,8 @@ export default function MainLayout({
   children,
   appBar = false,
   giveSpace = false,
-  mb = 4,
-  pt,
+  mb = 4, 
+  pt, // 14 rata rata penggunaan dengan app bar
 }: {
   children?: React.ReactNode;
   appBar?: boolean;
