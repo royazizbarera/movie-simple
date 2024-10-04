@@ -5,6 +5,7 @@ import MainLayout from "../layouts/MainLayout";
 import { useEffect, useState } from "react";
 import movieController from "../../controllers/movieController";
 import AppAppBar from "../components/AppAppBar";
+import SignUpForm from "../components/SignUpForm";
 
 export default function Home() {
   const [movies, setMovies] = useState<any[]>([]);
@@ -37,6 +38,7 @@ export default function Home() {
           }}
         >
           <LoginForm />
+          <SignUpForm />
         </Box>
         {/* Test grid movie */}
         <Box>
@@ -50,6 +52,7 @@ export default function Home() {
           >
             {movies.map((movie: any, index: number) => (
               <Grid
+                key={index}
                 xs={6}
                 sm={4}
                 md={3}

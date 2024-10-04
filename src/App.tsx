@@ -6,15 +6,18 @@ import RoutesApp from "./routers/RoutesApp";
 // import "@fontsource/quicksand";
 import "@fontsource/roboto";
 import ScrollToTop from "./views/components/ScrollToTop";
+import { UserProvider } from "./contexts/useAuth";
 
 function App() {
   return (
     <BrowserRouter>
-      <CssVarsProvider theme={theme}>
-        <CssBaseline />
-        <ScrollToTop />
-        <RoutesApp />
-      </CssVarsProvider>
+      <UserProvider>
+        <CssVarsProvider theme={theme}>
+          <CssBaseline />
+          <ScrollToTop />
+          <RoutesApp />
+        </CssVarsProvider>
+      </UserProvider>
     </BrowserRouter>
   );
 }

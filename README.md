@@ -37,6 +37,7 @@ import "@fontsource/roboto"
 |Error|Solution|
 |:----|:-------|
 |Blank putih ketika menambahkan Link TO|Menambahkan Browser Router di Root Component|
+|registerUser is not function|Menambahkan UserProvideer di root app|
 
 # Lesson Learn
 ## Component Joy UI

@@ -6,8 +6,15 @@ import Input from "@mui/joy/Input";
 import Button from "@mui/joy/Button";
 import Link from "@mui/joy/Link";
 import { Avatar, Divider } from "@mui/joy";
+import { useState } from "react";
+import { useAuth } from "../../contexts/useAuth";
 
 export default function LoginForm() {
+  const { loginUser } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorLogin, setErrorLogin] = useState("");
+
   const handleGoogleLogin = () => {
     const currentUrl = window.location.href; // Dapatkan URL halaman saat ini
     window.open(
@@ -16,6 +23,20 @@ export default function LoginForm() {
       )}`,
       "_self"
     );
+  };
+
+  const handleEmailPasswordLogin = async () => {
+    try {
+      await loginUser(
+        email,
+        password
+      );
+      setErrorLogin("");
+    } catch (error: any) {
+      setErrorLogin(
+        error.message || "Terjadi kesalahan saat login. Coba lagi nanti."
+      );
+    }
   };
 
   return (
@@ -40,25 +61,34 @@ export default function LoginForm() {
         </Typography>
         <Typography level="body-sm">Login to continue.</Typography>
       </div>
+
+      {errorLogin && (
+        <Typography color="danger" sx={{ fontSize: "sm", mb: 2 }}>
+          {errorLogin}
+        </Typography>
+      )}
+
       <FormControl>
         <FormLabel>Email</FormLabel>
         <Input
-          // html input attribute
           name="email"
           type="email"
           placeholder="johndoe@email.com"
+          value={email} // Controlled input
+          onChange={(e) => setEmail(e.target.value)} // Update state
         />
       </FormControl>
       <FormControl>
         <FormLabel>Password</FormLabel>
         <Input
-          // html input attribute
           name="password"
           type="password"
           placeholder="password"
+          value={password} // Controlled input
+          onChange={(e) => setPassword(e.target.value)} // Update state
         />
       </FormControl>
-      <Button  sx={{ mt: 1 }}>
+      <Button onClick={handleEmailPasswordLogin} sx={{ mt: 1 }}>
         Login
       </Button>
       <Typography

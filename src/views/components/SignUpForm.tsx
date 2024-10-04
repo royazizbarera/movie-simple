@@ -6,8 +6,27 @@ import Input from "@mui/joy/Input";
 import Button from "@mui/joy/Button";
 import Link from "@mui/joy/Link";
 import { Avatar, Divider } from "@mui/joy";
+import { useState } from "react";
+import { useAuth } from "../../contexts/useAuth";
 
 export default function SignUpForm() {
+  const { registerUser } = useAuth();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorSignUp, setErrorSignUp] = useState("");
+
+  const handleEmailPasswordSignUp = async () => {
+    try {
+      await registerUser(username, email, password);
+      setErrorSignUp("");
+    } catch (error: any) {
+      setErrorSignUp(
+        error.message || "Terjadi kesalahan saat SignUp. Coba lagi nanti."
+      );
+    }
+  };
+
   return (
     <Sheet
       sx={{
@@ -29,13 +48,20 @@ export default function SignUpForm() {
           <b>Sign up!</b>
         </Typography>
       </div>
+      {errorSignUp && (
+        <Typography color="danger" sx={{ fontSize: "sm", mb: 2 }}>
+          {errorSignUp}
+        </Typography>
+      )}
       <FormControl>
         <FormLabel>Username</FormLabel>
         <Input
           // html input attribute
           name="text"
           type="text"
+          value={username}
           placeholder="johndoe"
+          onChange={(e) => setUsername(e.target.value)}
         />
       </FormControl>
       <FormControl>
@@ -44,7 +70,9 @@ export default function SignUpForm() {
           // html input attribute
           name="email"
           type="email"
+          value={email}
           placeholder="johndoe@email.com"
+          onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
       <FormControl>
@@ -53,10 +81,17 @@ export default function SignUpForm() {
           // html input attribute
           name="password"
           type="password"
+          value={password}
           placeholder="password"
+          onChange={(e) => setPassword(e.target.value)}
         />
       </FormControl>
-      <Button sx={{ mt: 1 /* margin top */ }}>Sign up</Button>
+      <Button
+        onClick={handleEmailPasswordSignUp}
+        sx={{ mt: 1 /* margin top */ }}
+      >
+        Sign up
+      </Button>
       <Typography
         endDecorator={<Link href="/sign-up">Login</Link>}
         sx={{ fontSize: "sm", alignSelf: "center" }}
