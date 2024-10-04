@@ -16,7 +16,13 @@ const Logo: React.FC = () => {
         <Typography
         fontSize={16}
           sx={{
-            pb: "6px",
+            pb: {
+              xs: "2px",
+              sm: "2px",
+              md: "4px",
+              lg: "4px",
+              xl: "4px",
+            },
             color: "primary.solidBg",
             fontWeight: "bold",
             userSelect: "none",

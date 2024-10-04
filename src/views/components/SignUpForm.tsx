@@ -7,17 +7,7 @@ import Button from "@mui/joy/Button";
 import Link from "@mui/joy/Link";
 import { Avatar, Divider } from "@mui/joy";
 
-export default function LoginForm() {
-  const handleGoogleLogin = () => {
-    const currentUrl = window.location.href; // Dapatkan URL halaman saat ini
-    window.open(
-      `http://localhost:3001/api/v1/auth/google?redirectUrl=${encodeURIComponent(
-        currentUrl
-      )}`,
-      "_self"
-    );
-  };
-
+export default function SignUpForm() {
   return (
     <Sheet
       sx={{
@@ -36,10 +26,18 @@ export default function LoginForm() {
     >
       <div>
         <Typography level="h4" component="h1">
-          <b>Welcome!</b>
+          <b>Sign up!</b>
         </Typography>
-        <Typography level="body-sm">Login to continue.</Typography>
       </div>
+      <FormControl>
+        <FormLabel>Username</FormLabel>
+        <Input
+          // html input attribute
+          name="text"
+          type="text"
+          placeholder="johndoe"
+        />
+      </FormControl>
       <FormControl>
         <FormLabel>Email</FormLabel>
         <Input
@@ -58,19 +56,16 @@ export default function LoginForm() {
           placeholder="password"
         />
       </FormControl>
-      <Button  sx={{ mt: 1 }}>
-        Login
-      </Button>
+      <Button sx={{ mt: 1 /* margin top */ }}>Sign up</Button>
       <Typography
-        endDecorator={<Link href="/sign-up">Sign up</Link>}
+        endDecorator={<Link href="/sign-up">Login</Link>}
         sx={{ fontSize: "sm", alignSelf: "center" }}
       >
-        Don&apos;t have an account?
+        Have an account?
       </Typography>
       <Divider />
       <Button
         variant="soft"
-        onClick={handleGoogleLogin}
         startDecorator={
           <Avatar
             src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-1024.png"
@@ -86,7 +81,7 @@ export default function LoginForm() {
           color: "common.black",
         }}
       >
-        Login with Google
+        Sign up with Google
       </Button>
     </Sheet>
   );

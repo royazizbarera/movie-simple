@@ -7,15 +7,29 @@ import {
   List,
   Drawer,
   Autocomplete,
-  ModalClose,
   DialogContent,
   DialogTitle,
+  Modal,
+  ModalClose,
+  Sheet,
 } from "@mui/joy";
 
 import MovieNexusIcon from "./MovieNexusIcon";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import ModeToggle from "./ModeTogle";
+import { Link } from "react-router-dom";
+import LoginForm from "./LoginForm";
+import SignUpForm from "./SignUpForm";
+
+const appBarContent = [
+  { label: "Home", href: "/" },
+  { label: "Movies", href: "/movies" },
+  { label: "Populars", href: "/populars" },
+  { label: "Actors", href: "/actors" },
+  { label: "Genres", href: "/genres" },
+];
+
 const top100Films = [
   { label: "The Shawshank Redemption", year: 1994 },
   { label: "The Godfather", year: 1972 },
@@ -152,15 +166,19 @@ const buttonMenuStyle = {
 };
 
 export default function AppAppBar() {
-  const [open, setOpen] = React.useState<boolean>(false);
+  const [openSidebar, setOpenSidebar] = React.useState<boolean>(false);
+  const [openSignIn, setOpenSignIn] = React.useState<boolean>(false);
+  const [openSignUp, setOpenSignUp] = React.useState<boolean>(false);
+
   return (
     <Box
       component="header"
       position="fixed"
       sx={{
+        mt: 4,
         width: "100%",
         zIndex: 1100,
-        boxShadow: 0,
+        boxShadow: "none",
         bgcolor: "transparent",
         backgroundImage: "none",
       }}
@@ -198,21 +216,13 @@ export default function AppAppBar() {
               alignItems: "center",
             }}
           >
-            <Button variant="plain" color="neutral" sx={buttonMenuStyle}>
-              Home
-            </Button>
-            <Button variant="plain" color="neutral" sx={buttonMenuStyle}>
-              Movies
-            </Button>
-            <Button variant="plain" color="neutral" sx={buttonMenuStyle}>
-              Populars
-            </Button>
-            <Button variant="plain" color="neutral" sx={buttonMenuStyle}>
-              Actors
-            </Button>
-            <Button variant="plain" color="neutral" sx={buttonMenuStyle}>
-              Genres
-            </Button>
+            {appBarContent.map((content, index) => (
+              <Link to={content.href} key={index}>
+                <Button variant="plain" color="neutral" sx={buttonMenuStyle}>
+                  {content.label}
+                </Button>
+              </Link>
+            ))}
           </Box>
 
           {/* Right Side - Buttons for Login and Sign Up */}
@@ -225,10 +235,20 @@ export default function AppAppBar() {
               },
             }}
           >
-            <Button variant="soft" color="neutral" sx={{ marginRight: 1 }}>
+            <Button
+              onClick={() => setOpenSignIn(true)}
+              variant="soft"
+              color="neutral"
+              sx={{ marginRight: 1 }}
+            >
               Login
             </Button>
-            <Button variant="solid" color="primary" sx={{ marginRight: 1 }}>
+            <Button
+              onClick={() => setOpenSignUp(true)}
+              variant="solid"
+              color="primary"
+              sx={{ marginRight: 1 }}
+            >
               Sign Up
             </Button>
             <ModeToggle />
@@ -240,11 +260,11 @@ export default function AppAppBar() {
               <IconButton
                 variant="outlined"
                 color="neutral"
-                onClick={() => setOpen(true)}
+                onClick={() => setOpenSidebar(true)}
               >
                 <MenuIcon />
               </IconButton>
-              <Drawer open={open} onClose={() => setOpen(false)}>
+              <Drawer open={openSidebar} onClose={() => setOpenSidebar(false)}>
                 <ModalClose />
                 <DialogTitle>Menu</DialogTitle>
                 <DialogContent
@@ -266,41 +286,17 @@ export default function AppAppBar() {
                       justifyContent: "left",
                     }}
                   >
-                    <Button
-                      variant="plain"
-                      color="neutral"
-                      sx={buttonMenuStyle}
-                    >
-                      Home
-                    </Button>
-                    <Button
-                      variant="plain"
-                      color="neutral"
-                      sx={buttonMenuStyle}
-                    >
-                      Movies
-                    </Button>
-                    <Button
-                      variant="plain"
-                      color="neutral"
-                      sx={buttonMenuStyle}
-                    >
-                      Populars
-                    </Button>
-                    <Button
-                      variant="plain"
-                      color="neutral"
-                      sx={buttonMenuStyle}
-                    >
-                      Actors
-                    </Button>
-                    <Button
-                      variant="plain"
-                      color="neutral"
-                      sx={buttonMenuStyle}
-                    >
-                      Genres
-                    </Button>
+                    {appBarContent.map((content, index) => (
+                      <Link to={content.href} key={index}>
+                        <Button
+                          variant="plain"
+                          color="neutral"
+                          sx={buttonMenuStyle}
+                        >
+                          {content.label}
+                        </Button>
+                      </Link>
+                    ))}
                   </List>
                 </DialogContent>
                 {/* Right Side - Buttons for Login and Sign Up */}
@@ -315,10 +311,12 @@ export default function AppAppBar() {
                     variant="soft"
                     color="neutral"
                     sx={{ marginRight: 1 }}
+                    onClick={() => setOpenSignIn(true)}
                   >
                     Login
                   </Button>
                   <Button
+                    onClick={() => setOpenSignUp(true)}
                     variant="solid"
                     color="primary"
                     sx={{ marginRight: 1 }}
@@ -332,6 +330,46 @@ export default function AppAppBar() {
           </Box>
         </Box>
       </Container>
+      <React.Fragment>
+        <Modal
+          aria-labelledby="modal-title"
+          aria-describedby="modal-desc"
+          open={openSignIn}
+          onClose={() => setOpenSignIn(false)}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Sheet
+            variant="outlined"
+            sx={{ maxWidth: 500, borderRadius: "md", p: 3, boxShadow: "lg" }}
+          >
+            <ModalClose variant="plain" sx={{ m: 1 }} />
+            <LoginForm />
+          </Sheet>
+        </Modal>
+        <Modal
+          aria-labelledby="modal-title"
+          aria-describedby="modal-desc"
+          open={openSignUp}
+          onClose={() => setOpenSignUp(false)}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Sheet
+            variant="outlined"
+            sx={{ maxWidth: 500, borderRadius: "md", p: 3, boxShadow: "lg" }}
+          >
+            <ModalClose variant="plain" sx={{ m: 1 }} />
+            <SignUpForm />
+          </Sheet>
+        </Modal>
+      </React.Fragment>
     </Box>
   );
 }
